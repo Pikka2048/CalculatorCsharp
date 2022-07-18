@@ -126,13 +126,33 @@ namespace calculator
                         target[i - 1] = ressub.ToString();
                         CalcFromList(target);
                         break;
-                    case "*":
-                        break;
-                    case "/":
-                        break;
                 }
             }
             return -1;
+        }
+        private List<String> CalcMultiplay(List<String> target)
+        {
+            for (int i = 0; i < target.Count; i++)
+            {
+                switch (target[i])
+                {
+                    case "*":
+                        int resmul = Mul(target[i - 1], target[i + 1]);
+                        //演算記号の前後を削除する
+                        target.RemoveRange(i - 1, 2);
+                        //結果をセット
+                        target[i - 1] = resmul.ToString();
+                        CalcMultiplay(target);
+                        break;
+                    case "/":
+                        int resdiv = Div(target[i - 1], target[i + 1]);
+                        target.RemoveRange(i - 1, 2);
+                        target[i - 1] = resdiv.ToString();
+                        CalcMultiplay(target);
+                        break;
+                }
+            }
+            return target;
         }
         int TryToInt(string str)
         {
@@ -144,7 +164,7 @@ namespace calculator
             }
             catch (FormatException)
             {
-                MessageBox.Show("Int32 Parse Error","ERROR", MessageBoxButton.OK);
+                MessageBox.Show("Int32 Parse Error", "ERROR", MessageBoxButton.OK);
             }
             return result;
         }
@@ -157,6 +177,24 @@ namespace calculator
         int Sub(string n1, string n2)
         {
             int result = TryToInt(n1) - TryToInt(n2);
+            CalcStack = result;
+            return result;
+        }
+        int Mul(string n1,string n2)
+        {
+            int result = TryToInt(n1) * TryToInt(n2);
+            CalcStack = result;
+            return result;
+        }
+        int Div(string n1,string n2)
+        {
+            int n2int = TryToInt(n2);
+            if (n2int == 0)
+            {
+                MessageBox.Show("0では割れません", "ERROR", MessageBoxButton.OK);
+                return 0;
+            }
+            int result = TryToInt(n1) / n2int;
             CalcStack = result;
             return result;
         }
@@ -173,7 +211,9 @@ namespace calculator
             List<String> ParsedList;
             ParsedList = ParseString2List(CalcString);
 
-            CalcFromList(ParsedList);
+            List<String> MultipliedList;
+            MultipliedList = CalcMultiplay(ParsedList);
+            CalcFromList(MultipliedList);
 
             //Set Result
             CalcString = CalcStack.ToString();
