@@ -13,6 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+/// TODO 
+/// Support large mumber (Int64)
+/// Support radix point (Float)
+
+/// HACK
+/// List<string> uses "references" NOT "copies"
+
 namespace calculator
 {
     /// <summary>
